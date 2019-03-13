@@ -34,7 +34,7 @@ public class JSONParser
             return Boolean.FALSE;
         }
 
-        throw new IllegalStateException("Failed to parse JSON boolean at "+ pos[0]);
+        return null;
     }
 
     private static Number parseNumber(String json, int[] pos)
