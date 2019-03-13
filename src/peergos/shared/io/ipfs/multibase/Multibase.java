@@ -13,7 +13,7 @@ public class Multibase {
         Base58Flickr('Z'),
         Base58BTC('z');
 
-        public char prefix;
+        public final char prefix;
 
         Base(char prefix) {
             this.prefix = prefix;

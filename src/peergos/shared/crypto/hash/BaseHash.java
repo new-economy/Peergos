@@ -150,8 +150,6 @@ public abstract class BaseHash
 
     public abstract Object clone();
 
-    public abstract boolean selfTest();
-
     /**
      * Returns the byte array to use as padding before completing a hash
      * operation.

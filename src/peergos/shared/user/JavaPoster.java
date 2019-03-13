@@ -34,16 +34,16 @@ public class JavaPoster implements HttpPoster {
     public CompletableFuture<byte[]> post(String url, byte[] payload, boolean unzip) {
         HttpURLConnection conn = null;
         CompletableFuture<byte[]> res = new CompletableFuture<>();
+        DataOutputStream dout = null;
         try
         {
             conn = (HttpURLConnection) buildURL(url).openConnection();
             conn.setDoInput(true);
             conn.setDoOutput(true);
-            DataOutputStream dout = new DataOutputStream(conn.getOutputStream());
+            dout = new DataOutputStream(conn.getOutputStream());
 
             dout.write(payload);
-            dout.flush();
-
+            dout.close();
             String contentEncoding = conn.getContentEncoding();
             boolean isGzipped = "gzip".equals(contentEncoding);
             DataInputStream din = new DataInputStream(isGzipped && unzip ? new GZIPInputStream(conn.getInputStream()) : conn.getInputStream());
@@ -58,6 +58,11 @@ public class JavaPoster implements HttpPoster {
             } else
                 res.completeExceptionally(e);
         } finally {
+            if (dout != null) {
+                try {
+                    dout.close();
+                }catch(IOException ioe){}
+            }
             if (conn != null)
                 conn.disconnect();
         }

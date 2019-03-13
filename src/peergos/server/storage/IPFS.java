@@ -547,8 +547,8 @@ public class IPFS {
 
     private static byte[] post(URL target, byte[] body, Map<String, String> headers) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) target.openConnection();
-        for (String key: headers.keySet())
-            conn.setRequestProperty(key, headers.get(key));
+        for (Map.Entry<String, String> entry: headers.entrySet())
+            conn.setRequestProperty(entry.getKey(), entry.getValue());
         conn.setDoOutput(true);
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");

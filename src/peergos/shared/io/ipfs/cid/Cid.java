@@ -27,7 +27,7 @@ public class Cid extends Multihash {
         ZcashBlock(0xc0),
         ZcashTx(0xc1);
 
-        public long type;
+        public final long type;
 
         Codec(long type) {
             this.type = type;
@@ -156,13 +156,10 @@ public class Cid extends Multihash {
                 throw new CidEncodingException("Invalid Cif version number: " + version);
 
             long codec = readVarint(in);
-            if (version != 0 && version != 1)
-                throw new CidEncodingException("Invalid Cif version number: " + version);
-
             Multihash hash = Multihash.deserialize(new DataInputStream(in));
 
             return new Cid(version, Codec.lookup(codec), hash);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new CidEncodingException("Invalid cid bytes: " + ArrayOps.bytesToHex(data));
         }
     }
@@ -175,7 +172,7 @@ public class Cid extends Multihash {
             if (b == -1)
                 throw new EOFException();
             if (b < 0x80) {
-                if (i > 9 || i == 9 && b > 1) {
+                if (i == 9 && b > 1) {
                     throw new IllegalStateException("Overflow reading varint" +(-(i + 1)));
                 }
                 return x | (((long)b) << s);

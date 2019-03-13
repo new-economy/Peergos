@@ -110,10 +110,11 @@ public class TofuKeyStore implements Cborable {
         Map<String, List<UserPublicKeyLink>> chains = new HashMap<>();
         Map<String, List<UserPublicKeyLink>> expired = new HashMap<>();
         SortedMap<CborObject, ? extends Cborable> values = ((CborObject.CborMap) cbor).values;
-        for (CborObject key: values.keySet()) {
+        for (Map.Entry<CborObject, ? extends Cborable> entry: values.entrySet()) {
+            CborObject key = entry.getKey();
             if (key instanceof CborObject.CborString) {
                 String name = ((CborObject.CborString) key).value;
-                Cborable value = values.get(key);
+                Cborable value = entry.getValue();
                 if (value instanceof CborObject.CborList) {
                     List<UserPublicKeyLink> chain = ((CborObject.CborList) value).value.stream()
                             .map(UserPublicKeyLink::fromCbor)

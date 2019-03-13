@@ -170,7 +170,7 @@ public class CachingPeergosFS extends PeergosFS {
         return (int) pos % Chunk.MAX_SIZE;
     }
 
-    private class CacheEntryHolder {
+    private static class CacheEntryHolder {
         private CacheEntry entry;
 
         public CacheEntryHolder(CacheEntry entry) {

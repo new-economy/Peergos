@@ -9,7 +9,7 @@ import java.net.*;
 import java.util.*;
 
 public class Protocol {
-    public static int LENGTH_PREFIXED_VAR_SIZE = -1;
+    public final static int LENGTH_PREFIXED_VAR_SIZE = -1;
     private static final String IPV4_REGEX = "\\A(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}\\z";
 
     enum Type {
@@ -184,7 +184,7 @@ public class Protocol {
             if (b == -1)
                 throw new EOFException();
             if (b < 0x80) {
-                if (i > 9 || i == 9 && b > 1) {
+                if (i == 9 && b > 1) {
                     throw new IllegalStateException("Overflow reading varint" +(-(i + 1)));
                 }
                 return x | (((long)b) << s);

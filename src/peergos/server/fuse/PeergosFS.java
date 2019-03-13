@@ -512,7 +512,7 @@ public class PeergosFS extends FuseStubFS implements AutoCloseable {
         long actualSize = stat.properties.size;
 
         if (offset > actualSize) {
-            Optional.empty();
+            return Optional.empty();
         }
 
         long size = Math.min(actualSize - offset, requestedSize);
@@ -552,13 +552,13 @@ public class PeergosFS extends FuseStubFS implements AutoCloseable {
         return data.length;
     }
 
-    private byte[] getData(Pointer pointer, int size) {
+    private byte[] getData(Pointer pointer, long size) {
         if (Integer.MAX_VALUE < size) {
             throw new IllegalStateException("Cannot write more than " + Integer.MAX_VALUE + " bytes");
         }
 
-        byte[] toWrite = new byte[size];
-        pointer.get(0, toWrite, 0, size);
+        byte[] toWrite = new byte[(int)size];
+        pointer.get(0, toWrite, 0, (int)size);
         return toWrite;
     }
 
@@ -605,7 +605,7 @@ public class PeergosFS extends FuseStubFS implements AutoCloseable {
     }
 
     public int write(PeergosStat parent, String name, Pointer pointer, long size, long offset) {
-        byte[] data = getData(pointer, (int) size);
+        byte[] data = getData(pointer, size);
         return write(parent, name, data, size, offset);
     }
 

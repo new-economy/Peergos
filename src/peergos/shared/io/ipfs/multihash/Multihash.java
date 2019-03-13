@@ -19,7 +19,7 @@ public class Multihash implements Comparable<Multihash> {
         blake2b(0x40, 64),
         blake2s(0x41, 32);
 
-        public int index, length;
+        public final int index, length;
 
         Type(int index, int length) {
             this.index = index;

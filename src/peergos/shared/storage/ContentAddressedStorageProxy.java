@@ -49,9 +49,9 @@ public interface ContentAddressedStorageProxy {
 
     class HTTP implements ContentAddressedStorageProxy {
         private static final String P2P_PROXY_PROTOCOL = "/http";
+        private static final String apiPrefix = "api/v0/";
 
         private final HttpPoster poster;
-        private final String apiPrefix = "api/v0/";
 
         public HTTP(HttpPoster poster) {
             this.poster = poster;

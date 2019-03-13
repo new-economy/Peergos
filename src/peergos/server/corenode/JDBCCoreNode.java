@@ -347,27 +347,25 @@ public class JDBCCoreNode {
             return;
 
         //do tables exists?
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(TABLE_NAMES_SELECT_STMT);
+        try (Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery(TABLE_NAMES_SELECT_STMT);
 
-        ArrayList<String> missingTables = new ArrayList(TABLES.keySet());
-        while (rs.next())
-        {
-            String tableName = rs.getString("name");
-            missingTables.remove(tableName);
-        }
+            ArrayList<String> missingTables = new ArrayList(TABLES.keySet());
+            while (rs.next()) {
+                String tableName = rs.getString("name");
+                missingTables.remove(tableName);
+            }
 
-        for (String missingTable: missingTables)
-        {
-            try
-            {
-                Statement createStmt = conn.createStatement();
-                //LOG.info("Adding table "+ missingTable);
-                createStmt.executeUpdate(TABLES.get(missingTable));
-                createStmt.close();
+            for (String missingTable : missingTables) {
+                try {
+                    Statement createStmt = conn.createStatement();
+                    //LOG.info("Adding table "+ missingTable);
+                    createStmt.executeUpdate(TABLES.get(missingTable));
+                    createStmt.close();
 
-            } catch ( Exception e ) {
-                LOG.severe( e.getClass().getName() + ": " + e.getMessage() );
+                } catch (Exception e) {
+                    LOG.severe(e.getClass().getName() + ": " + e.getMessage());
+                }
             }
         }
     }
@@ -448,10 +446,10 @@ public class JDBCCoreNode {
             // single link to claim a new username
             try {
                 PreparedStatement user = null, link = null, chain = null;
-                try {
-                    conn.setAutoCommit(false);
+                conn.setAutoCommit(false);
+                try (Statement statement = conn.createStatement()){
 
-                    long userCount = conn.createStatement().executeQuery("select count(name) from usernames;").getLong(1);
+                    long userCount = statement.executeQuery("select count(name) from usernames;").getLong(1);
                     if (userCount >= this.maxUsernameCount)
                         throw new IllegalStateException("Not currently accepting new users.");
 

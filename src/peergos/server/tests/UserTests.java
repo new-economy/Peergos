@@ -34,7 +34,7 @@ import java.util.stream.*;
 public abstract class UserTests {
 	private static final Logger LOG = Logging.LOG();
 
-    public static int RANDOM_SEED = 666;
+    public static final int RANDOM_SEED = 666;
     private final NetworkAccess network;
     private final Crypto crypto = Crypto.initJava();
     private final URL peergosUrl;

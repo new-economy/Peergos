@@ -363,7 +363,7 @@ public class MultiUserTests {
         SymmetricKey priorMetaKey = priorFileAccess.getMetaKey(priorPointer.rBaseKey);
 
         // unshare with a single user
-        u1.unShareReadAccess(Paths.get(u1.username, filename), userToUnshareWith.username);
+        u1.unShareReadAccess(Paths.get(u1.username, filename), userToUnshareWith.username).get();
 
         String newname = "newname.txt";
         FileWrapper updatedParent = u1.getByPath(originalPath).get().get()

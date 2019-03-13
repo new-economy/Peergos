@@ -59,7 +59,7 @@ public class EfficiencyComparison {
                 int idealUsage = state.size() * (32 + 34);
                 LOG.info(bitWidth + "-bit champ, " + maxCollisions + " max-collisions");
                 LOG.info("Champ used size: " + champSize + ", Champ usage after gc: " + champUsage + ", ideal: "
-                        + idealUsage + ", champ overhead: " + (double) (champUsage * 100 / idealUsage) / 100);
+                        + idealUsage + ", champ overhead: " + (champUsage * 100.0 / (double)idealUsage) / 100.0);
             }
         }
     }

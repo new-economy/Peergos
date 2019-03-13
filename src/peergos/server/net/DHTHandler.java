@@ -136,7 +136,7 @@ public class DHTHandler implements HttpHandler {
                 }
                 case BLOCK_GET:{
                     Multihash hash = Cid.decode(args.get(0));
-                    (hash instanceof Cid && ((Cid) hash).codec == Cid.Codec.Raw ?
+                    (((Cid) hash).codec == Cid.Codec.Raw ?
                             dht.getRaw(hash) :
                             dht.get(hash).thenApply(opt -> opt.map(CborObject::toByteArray)))
                             .thenAccept(opt -> replyBytes(httpExchange,

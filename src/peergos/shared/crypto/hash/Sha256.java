@@ -80,9 +80,6 @@ public class Sha256
 
     private static final int[] w = new int[64];
 
-    /** caches the result of the correctness test, once executed. */
-    private static Boolean valid;
-
     /** 256-bit interim result. */
     private int h0, h1, h2, h3, h4, h5, h6, h7;
 
@@ -181,20 +178,6 @@ public class Sha256
         h5 = 0x9b05688c;
         h6 = 0x1f83d9ab;
         h7 = 0x5be0cd19;
-    }
-
-    public boolean selfTest()
-    {
-        if (valid == null)
-        {
-            Sha256 md = new Sha256();
-            md.update((byte) 0x61); // a
-            md.update((byte) 0x62); // b
-            md.update((byte) 0x63); // c
-            String result = ArrayOps.bytesToHex(md.digest());
-            valid = Boolean.valueOf(DIGEST0.equals(result));
-        }
-        return valid.booleanValue();
     }
 
     private static synchronized final int[] sha(int hh0, int hh1, int hh2,

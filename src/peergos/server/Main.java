@@ -38,7 +38,7 @@ public class Main {
         PublicSigningKey.addProvider(PublicSigningKey.Type.Ed25519, new Ed25519.Java());
     }
 
-    public static Command ENSURE_IPFS_INSTALLED = new Command("install-ipfs",
+    public static final Command ENSURE_IPFS_INSTALLED = new Command("install-ipfs",
             "Download/update IPFS binary. Does nothing if current IPFS binary is up-to-date.",
             args -> {
                 Path ipfsExePath = IpfsWrapper.getIpfsExePath(args);
@@ -52,7 +52,7 @@ public class Main {
                     new Command.Arg("ipfs-exe-path", "Desired path to IPFS executable. Defaults to $PEERGOS_PATH/ipfs", false)
             )
     );
-    public static Command IPFS = new Command("ipfs",
+    public static final Command IPFS = new Command("ipfs",
             "Start IPFS daemon and ensure configuration, optionally manage runtime.",
             Main::startIpfs,
             Arrays.asList(

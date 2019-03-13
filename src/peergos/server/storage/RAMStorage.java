@@ -151,8 +151,8 @@ public class RAMStorage implements ContentAddressedStorage {
 
         RAMStorage that = (RAMStorage) o;
 
-        for (Multihash ourKey : storage.keySet()) {
-            if (! Arrays.equals(storage.get(ourKey), ((RAMStorage) o).storage.get(ourKey)))
+        for (Map.Entry<Multihash, byte[]> entry : storage.entrySet()) {
+            if (! Arrays.equals(entry.getValue(), ((RAMStorage) o).storage.get(entry.getKey())))
                 return false;
         }
         for (Multihash theirKey : ((RAMStorage) o).storage.keySet()) {

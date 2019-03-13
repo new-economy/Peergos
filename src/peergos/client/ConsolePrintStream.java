@@ -45,12 +45,12 @@ public class ConsolePrintStream extends PrintStream {
 	}
 
 	public native void consoleLog (String msg) /*-{
-																if (window.console) {
-																window.console.log(msg);
-																} else {
-																document.title = "LOG:" + msg;
-																}
-																}-*/;
+		if (window.console) {
+			window.console.log(msg);
+		} else {
+			document.title = "LOG:" + msg;
+		}
+	}-*/;
 
 	public void print (char c) {
 		if (c == '\n') {

@@ -24,12 +24,12 @@ import java.util.stream.*;
 
 public class FuseTests {
 	private static final Logger LOG = Logging.LOG();
-    public static int WEB_PORT = 8888;
-    public static String username = "test02";
-    public static String password = username;
-    public static Path mountPoint, home;
+    protected static int WEB_PORT = 8888;
+    public static final String username = "test02";
+    public static final String password = username;
+    protected static Path mountPoint, home;
     public static FuseProcess fuseProcess;
-    public static Random RANDOM = new Random(666);
+    public static final Random RANDOM = new Random(666);
 
     public static void setWebPort(int webPort) {
         WEB_PORT = webPort;
@@ -187,7 +187,7 @@ public class FuseTests {
     }
 
     @Test public void writePastEnd() throws IOException {
-        int length = 10 * 1024;
+        final int length = 10 * 1024;
         Path path = createRandomFile(length);
         byte[] initial = Files.readAllBytes(path);
         RandomAccessFile raf = new RandomAccessFile(path.toFile(), "rw");

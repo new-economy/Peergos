@@ -17,8 +17,8 @@ public class ResponseHeaderHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        for (String key: responseHeaders.keySet())
-            httpExchange.getResponseHeaders().set(key, responseHeaders.get(key));
+        for (Map.Entry<String, String> entry: responseHeaders.entrySet())
+            httpExchange.getResponseHeaders().set(entry.getKey(), entry.getValue());
         handler.handle(httpExchange);
     }
 }
