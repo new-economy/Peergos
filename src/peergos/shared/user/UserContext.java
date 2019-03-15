@@ -52,6 +52,8 @@ public class UserContext {
 
     private final TransactionService transactionService;
 
+    private final WriteSynchronizer writeSynchronizer;
+
     // The root of the global filesystem as viewed by this context
     @JsProperty
     public TrieNode entrie; // ba dum che!
@@ -63,6 +65,8 @@ public class UserContext {
     // In process only
     @JsProperty
     public final Crypto crypto;
+
+
 
     public UserContext(String username,
                        SigningPrivateKeyAndPublicHash signer,
@@ -95,6 +99,7 @@ public class UserContext {
         this.entrie = entrie;
         this.sharedWithCache = new SharedWithCache();
         this.transactionService = buildTransactionService();
+        this.writeSynchronizer = new WriteSynchronizer(network.mutable, network.dhtClient);
     }
 
     private TransactionService buildTransactionService() {
@@ -980,7 +985,8 @@ public class UserContext {
      * @param network
      * @return The hashed new signing pair
      */
-    public static CompletableFuture<SigningPrivateKeyAndPublicHash> addOwnedKeyToParent(PublicKeyHash owner,
+
+    public static CompletableFuture<SigningPrivateKeyAndPublicHash> addOwnedKeyToParentOrig(PublicKeyHash owner,
                                                                                         SigningPrivateKeyAndPublicHash parentSigner,
                                                                                         SigningKeyPair newSignerPair,
                                                                                         NetworkAccess network) {
@@ -998,6 +1004,29 @@ public class UserContext {
                                             .thenApply(x -> new SigningPrivateKeyAndPublicHash(newSignerHash,
                                                     newSignerPair.secretSigningKey));
                                 })), network.dhtClient);
+    }
+
+    public CompletableFuture<SigningPrivateKeyAndPublicHash> addOwnedKeyToParent(PublicKeyHash owner,
+                                                                                        SigningPrivateKeyAndPublicHash parentSigner,
+                                                                                        SigningKeyPair newSignerPair,
+                                                                                        NetworkAccess network) {
+        return IpfsTransaction.call(owner,
+                tid -> network.dhtClient.putSigningKey(
+                        parentSigner.secret.signatureOnly(newSignerPair.publicSigningKey.serialize()),
+                        owner, parentSigner.publicKeyHash, newSignerPair.publicSigningKey, tid)
+                        .thenCompose(newSignerHash ->
+                            writeSynchronizer.getCurrentWriterData(owner, parentSigner.publicKeyHash,
+                                    wd -> {
+                                        Set<PublicKeyHash> ownedKeys = new HashSet<>(wd.props.ownedKeys);
+                                        ownedKeys.add(newSignerHash);
+                                        WriterData updatedParentWD = wd.props.withOwnedKeys(ownedKeys);
+                                        return updatedParentWD.commit(owner,
+                                                parentSigner, wd.hash, network, tid);
+                                    }
+                            ).thenApply(cwd ->  newSignerHash)
+                        )
+                .thenApply(newSignerHash -> new SigningPrivateKeyAndPublicHash(newSignerHash, newSignerPair.secretSigningKey))
+                , network.dhtClient);
     }
 
     /**
